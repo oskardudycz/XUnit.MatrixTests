@@ -10,7 +10,7 @@ namespace XUnit.MatrixTests.Extras
     /// Allows targeting test at specified minimum and/or maximum version of PG
     /// </summary>
     [AttributeUsage(AttributeTargets.Method)]
-    [XunitTestCaseDiscoverer("XUnit.MatrixTests.Extras.SerializerTargetedFact", "XUnit.MatrixTests")]
+    [XunitTestCaseDiscoverer("XUnit.MatrixTests.Extras.PgVersionTargetedFactDiscoverer", "XUnit.MatrixTests")]
     public sealed class SerializerTargetedFact: FactAttribute
     {
         public SerializerType RunFor { get; set; }
@@ -18,28 +18,28 @@ namespace XUnit.MatrixTests.Extras
 
     public sealed class PgVersionTargetedFactDiscoverer: FactDiscoverer
     {
-        private static readonly SerializerType serializerType;
+        private readonly SerializerType serializerType;
 
         static PgVersionTargetedFactDiscoverer()
         {
-            serializerType = TestsSettings.SerializerType;
         }
 
         public PgVersionTargetedFactDiscoverer(IMessageSink diagnosticMessageSink): base(diagnosticMessageSink)
         {
+            serializerType = TestsSettings.SerializerType;
         }
 
         public override IEnumerable<IXunitTestCase> Discover(ITestFrameworkDiscoveryOptions discoveryOptions, ITestMethod testMethod,
             IAttributeInfo factAttribute)
         {
-            var runForSerializerArg = factAttribute.GetNamedArgument<string>(nameof(SerializerTargetedFact.RunFor));
-
-            if (runForSerializerArg != null && Enum.TryParse<SerializerType>(runForSerializerArg, out var runForSerializer) && runForSerializer != serializerType)
+            var runForSerializer = factAttribute.GetNamedArgument<SerializerType>(nameof(SerializerTargetedFact.RunFor));
+            
+            if (runForSerializer != SerializerType.Any && runForSerializer != serializerType)
             {
                 yield return new TestCaseSkippedDueToSerializerSupport($"Test skipped as it cannot be run for {serializerType} ", DiagnosticMessageSink, discoveryOptions.MethodDisplayOrDefault(), discoveryOptions.MethodDisplayOptionsOrDefault(), testMethod);
             }
             
-            yield return CreateTestCase(discoveryOptions, testMethod, factAttribute);
+            yield return base.CreateTestCase(discoveryOptions, testMethod, factAttribute);
         }
 
         internal sealed class TestCaseSkippedDueToSerializerSupport: XunitTestCase

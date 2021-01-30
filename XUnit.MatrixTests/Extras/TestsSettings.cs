@@ -4,6 +4,7 @@ namespace XUnit.MatrixTests
 {
     public enum SerializerType
     {
+        Any,
         Newtonsoft,
         SystemTextJson
     }
