@@ -11,21 +11,21 @@ namespace XUnit.MatrixTests.Extras
     /// Allows targeting test at specified minimum and/or maximum version of PG
     /// </summary>
     [AttributeUsage(AttributeTargets.Method)]
-    [XunitTestCaseDiscoverer("XUnit.MatrixTests.Extras.PgVersionTargetedFactDiscoverer", "XUnit.MatrixTests")]
-    public sealed class SerializerTargetedFact: FactAttribute
+    [XunitTestCaseDiscoverer("XUnit.MatrixTests.Extras.SerializerTargetedFactDiscoverer", "XUnit.MatrixTests")]
+    public sealed class SerializerTypeTargetedFact: FactAttribute
     {
         public SerializerType RunFor { get; set; }
     }
 
-    public sealed class PgVersionTargetedFactDiscoverer: FactDiscoverer
+    public sealed class SerializerTargetedFactDiscoverer: FactDiscoverer
     {
         private readonly SerializerType serializerType;
 
-        static PgVersionTargetedFactDiscoverer()
+        static SerializerTargetedFactDiscoverer()
         {
         }
 
-        public PgVersionTargetedFactDiscoverer(IMessageSink diagnosticMessageSink): base(diagnosticMessageSink)
+        public SerializerTargetedFactDiscoverer(IMessageSink diagnosticMessageSink): base(diagnosticMessageSink)
         {
             serializerType = TestsSettings.SerializerType;
         }
@@ -33,7 +33,7 @@ namespace XUnit.MatrixTests.Extras
         public override IEnumerable<IXunitTestCase> Discover(ITestFrameworkDiscoveryOptions discoveryOptions, ITestMethod testMethod,
             IAttributeInfo factAttribute)
         {
-            var runForSerializer = factAttribute.GetNamedArgument<SerializerType?>(nameof(SerializerTargetedFact.RunFor));
+            var runForSerializer = factAttribute.GetNamedArgument<SerializerType?>(nameof(SerializerTypeTargetedFact.RunFor));
             
             if (runForSerializer != null && runForSerializer != serializerType)
             {

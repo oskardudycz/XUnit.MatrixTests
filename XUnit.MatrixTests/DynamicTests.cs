@@ -7,7 +7,7 @@ namespace XUnit.MatrixTests
 {
     public class DynamicTests
     {
-        [SerializerTargetedFact(RunFor = SerializerType.Newtonsoft)]
+        [SerializerTypeTargetedFact(RunFor = SerializerType.NewtonsoftJsonNet)]
         public void DeserializeDynamic()
         {
             var session = new DocumentSession();

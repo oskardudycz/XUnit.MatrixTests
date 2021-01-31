@@ -18,7 +18,8 @@ namespace XUnit.MatrixTests
 
                 serializerType = Enum.TryParse(defaultSerializerEnv, out SerializerType parsedSerializerType)
                     ? parsedSerializerType
-                    : SerializerType.Newtonsoft;
+                    : SerializerType.NewtonsoftJsonNet;
+                
                 return serializerType.Value;
             }
         }

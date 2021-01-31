@@ -2,7 +2,7 @@
 {
     public enum SerializerType
     {
-        Newtonsoft = 1,
+        NewtonsoftJsonNet = 1,
         SystemTextJson = 2
     }
 }
