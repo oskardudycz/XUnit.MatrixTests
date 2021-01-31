@@ -14,7 +14,7 @@ namespace Weasel
 
         public DocumentSession()
         {
-            serializer = SerializationOptions.DefaultSerializerFactory();
+            serializer = SerializerFactory.New();
         }
 
         public T Load<T>(string id)

@@ -1,14 +1,8 @@
 ﻿using System;
+using Weasel.Serialization;
 
 namespace XUnit.MatrixTests
 {
-    public enum SerializerType
-    {
-        Any,
-        Newtonsoft,
-        SystemTextJson
-    }
-    
     public static class TestsSettings
     {
         private static SerializerType? serializerType;

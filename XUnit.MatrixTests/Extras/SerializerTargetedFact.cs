@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Weasel.Serialization;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Sdk;
@@ -32,9 +33,9 @@ namespace XUnit.MatrixTests.Extras
         public override IEnumerable<IXunitTestCase> Discover(ITestFrameworkDiscoveryOptions discoveryOptions, ITestMethod testMethod,
             IAttributeInfo factAttribute)
         {
-            var runForSerializer = factAttribute.GetNamedArgument<SerializerType>(nameof(SerializerTargetedFact.RunFor));
+            var runForSerializer = factAttribute.GetNamedArgument<SerializerType?>(nameof(SerializerTargetedFact.RunFor));
             
-            if (runForSerializer != SerializerType.Any && runForSerializer != serializerType)
+            if (runForSerializer != null && runForSerializer != serializerType)
             {
                 yield return new TestCaseSkippedDueToSerializerSupport($"Test skipped as it cannot be run for {serializerType} ", DiagnosticMessageSink, discoveryOptions.MethodDisplayOrDefault(), discoveryOptions.MethodDisplayOptionsOrDefault(), testMethod);
             }

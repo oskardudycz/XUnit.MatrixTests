@@ -1,4 +1,5 @@
 using Weasel;
+using Weasel.Serialization;
 using Xunit;
 using XUnit.MatrixTests.Extras;
 

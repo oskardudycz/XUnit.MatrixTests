@@ -1,5 +1,4 @@
-﻿using System;
-using Weasel.Serialization;
+﻿using Weasel.Serialization;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Sdk;
@@ -13,10 +12,7 @@ namespace XUnit.MatrixTests
         public TestSetup(IMessageSink messageSink)
             :base(messageSink)
         {
-            if (TestsSettings.SerializerType == SerializerType.SystemTextJson)
-            {
-                SerializationOptions.DefaultSerializerFactory = () => new SystemTextJsonSerializer();
-            }
+            SerializerFactory.DefaultSerializerType = TestsSettings.SerializerType;
         }
 
         public new void Dispose()
