@@ -8,36 +8,43 @@ using Xunit.Sdk;
 namespace XUnit.MatrixTests.Extras
 {
     /// <summary>
-    /// Allows targeting test at specified minimum and/or maximum version of PG
+    /// Allows targeting test at specified serializer type
     /// </summary>
     [AttributeUsage(AttributeTargets.Method)]
-    [XunitTestCaseDiscoverer("XUnit.MatrixTests.Extras.SerializerTargetedFactDiscoverer", "XUnit.MatrixTests")]
-    public sealed class SerializerTypeTargetedFact: FactAttribute
+    [XunitTestCaseDiscoverer("XUnit.MatrixTests.Extras.SerializerTargetedTheoryDiscoverer", "XUnit.MatrixTests")]
+    public sealed class SerializerTypeTargetedTheory: TheoryAttribute
     {
         public SerializerType RunFor { get; set; }
     }
 
-    public sealed class SerializerTargetedFactDiscoverer: FactDiscoverer
+    public sealed class SerializerTargetedTheoryDiscoverer: TheoryDiscoverer
     {
         private readonly SerializerType serializerType;
 
-        public SerializerTargetedFactDiscoverer(IMessageSink diagnosticMessageSink): base(diagnosticMessageSink)
+        static SerializerTargetedTheoryDiscoverer()
+        {
+        }
+
+        public SerializerTargetedTheoryDiscoverer(IMessageSink diagnosticMessageSink): base(diagnosticMessageSink)
         {
             serializerType = TestsSettings.SerializerType;
         }
 
         public override IEnumerable<IXunitTestCase> Discover(ITestFrameworkDiscoveryOptions discoveryOptions, ITestMethod testMethod,
-            IAttributeInfo factAttribute)
+            IAttributeInfo theoryAttribute)
         {
-            var runForSerializer = factAttribute.GetNamedArgument<SerializerType?>(nameof(SerializerTypeTargetedFact.RunFor));
-            
+            var runForSerializer = theoryAttribute.GetNamedArgument<SerializerType?>(nameof(SerializerTypeTargetedTheory.RunFor));
+
             if (runForSerializer != null && runForSerializer != serializerType)
             {
                 yield return new TestCaseSkippedDueToSerializerSupport($"Test skipped as it cannot be run for {serializerType} ", DiagnosticMessageSink, discoveryOptions.MethodDisplayOrDefault(), discoveryOptions.MethodDisplayOptionsOrDefault(), testMethod);
                 yield break;
             }
-            
-            yield return CreateTestCase(discoveryOptions, testMethod, factAttribute);
+
+            foreach (var xunitTestCase in CreateTestCasesForTheory(discoveryOptions, testMethod, theoryAttribute))
+            {
+                yield return xunitTestCase;
+            }
         }
 
         internal sealed class TestCaseSkippedDueToSerializerSupport: XunitTestCase
